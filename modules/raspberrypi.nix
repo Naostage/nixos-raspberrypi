@@ -1,6 +1,16 @@
 { config, lib, pkgs, ... }:
-
+let
+  cfg = config.raspberry-pi;
+in
 {
+  imports = [
+    ./system/boot/loader/raspberrypi
+    ./configtxt.nix
+    ./udev.nix
+    # config.txt is in `config.hardware.raspberry-pi.config-generated`
+    ./configtxt-config.nix
+  ];
+
   options = {
     raspberry-pi.boot.kernelParams = lib.mkOption {
       default = [ "console=serial0,115200n8" "console=tty1" ];
@@ -19,18 +29,7 @@
   };
 
   config = 
-  let
-    cfg = config.raspberry-pi;
-  in
   {
-    imports = [
-      ./system/boot/loader/raspberrypi
-      ./configtxt.nix
-      ./udev.nix
-      # config.txt is in `config.hardware.raspberry-pi.config-generated`
-      ./configtxt-config.nix
-    ];
-
     boot.loader.raspberry-pi = {
       enable = true;
     };
